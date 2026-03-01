@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 public class FootballApiService {
     private static final Logger log = Logger.getLogger(FootballApiService.class.getName());
     private final RestTemplate restTemplate = new RestTemplate();
+    @Autowired
     private TelegramSenderService telegramSenderService;
     private final List<Integer> leagueIds = List.of(235, 236, 78, 79, 140, 142, 66, 65, 61, 62, 94, 95, 135, 136, 253, 88, 307, 188, 98, 99, 100, 101, 497, 102, 242, 144, 268, 128, 265, 250, 722, 292, 293, 833, 482);
     private List<Match> finalResults = new ArrayList<>();
