@@ -1,7 +1,6 @@
 package org.example.footballevents;
 
 import jakarta.annotation.PostConstruct;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -11,7 +10,6 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 import java.util.logging.Logger;
 
-@Slf4j
 @Component
 public class MyTelegramBot extends TelegramLongPollingBot {
 

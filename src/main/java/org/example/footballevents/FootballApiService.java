@@ -1,10 +1,7 @@
 package org.example.footballevents;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.java.Log;
-import lombok.extern.log4j.Log4j;
-import lombok.extern.log4j.Log4j2;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -25,7 +22,7 @@ public class FootballApiService {
     private final RestTemplate restTemplate = new RestTemplate();
     @Autowired
     private TelegramSenderService telegramSenderService;
-    private final List<Integer> leagueIds = List.of(235, 236, 78, 79, 140, 142, 66, 65, 61, 62, 94, 95, 135, 136, 253, 88, 307, 188, 98, 99, 100, 101, 497, 102, 242, 144, 268, 128, 265, 250, 722, 292, 293, 833, 482);
+    private final List<Integer> leagueIds = List.of(235, 236, 78, 79, 140, 142, 66, 65, 61, 62, 94, 95, 135, 136, 253, 88, 307, 188, 98, 99, 100, 101, 497, 102, 242, 144, 268, 128, 265, 250, 722, 292, 293, 833, 482, 318, 293);
     private List<Match> finalResults = new ArrayList<>();
     public List<Match> tempResults = new ArrayList<>();
 
