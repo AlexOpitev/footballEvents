@@ -1,0 +1,70 @@
+package org.example.footballevents;
+
+import java.util.Arrays;
+import java.util.List;
+
+public enum League {
+    RUSSIAN_PREMIER_LEAGUE(235),
+    RUSSIAN_FIRST_LEAGUE(236),
+    BUNDESLIGA(78),
+    BUNDESLIGA_2(79),
+    LA_LIGA_SPAIN(140),
+    PRIMERA_DIVISION_SPAIN(142),
+    COUPE_DE_FRANCE(66),
+    COUPE_DE_LA_LIGUE_FRANCE(65),
+    LIGUE_1_FRANCE(61),
+    LIGUE_2_FRANCE(62),
+    PRIMEIRA_LIGA_PORTUGAL(94),
+    SEGUNDA_LIGA_PORTUGAL(95),
+    SERIA_A_ITALY(135),
+    SERIA_B_ITALY(136),
+    MLS_USA(253),
+    PRIMERA_NETHERLANDS(88),
+    PRO_SAUDI_ARABIA(307),
+    A_AUSTRALIA(188),
+    QUEENSLAND_PREMIER_LEAGUE_AUSTRALIA(833),
+    SOUTH_L1_AUSTRALIA(834),
+    J1_JAPAN(98),
+    J2_JAPAN(99),
+    J3_JAPAN(100),
+    CUP_JAPAN(101),
+    EMPEROR_CUP_JAPAN(102),
+    JAPAN_FOOTBALL_LEAGUE(497),
+    PRIMERA_ECUADOR(242),
+    PRIMERA_BELGIUM(144),
+    PRIMERA_URUGUAY(268),
+    PRIMERA_ARGENTINA(128),
+    PRIMERA_CHILE(265),
+    PRIMERA_PARAGUAY(250),
+    PRIMERA_MEXICO(722),
+    PRIMERA_SOUTH_KOREA(292),
+    K2_SOUTH_KOREA(293),
+    CUP_SOUTH_KOREA(294),
+    TWEEDE_NETHERLANDS(492),
+    DEVISION_1_CYPRUS(318),
+    INDONESIA_1_LIGA(274),
+    SERBIA_CUP(732),
+    SERBIA_PRVA_LIGA(287),
+    AUSTRIA_CUP(220),
+    AUSTRIA_BUNDESLIGA(218),
+    INDIAN_SUPER_LEAGUE(323),
+    INDONESIA_LIGA_1(274),
+    UZBEKISTAN_SUPER_LEAGUE(369),
+    SWITZERLAND_SUPER_LEAGUE(207),
+    SLOVENIA_1(373),
+    SLOVAKIA_SUPER_LIGA(332);
+
+    private final int id;
+
+    League(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public static List<Integer> getIds() {
+        return Arrays.stream(League.values()).map(League::getId).toList();
+    }
+}

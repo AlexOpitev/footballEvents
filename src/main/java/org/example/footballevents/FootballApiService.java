@@ -7,11 +7,14 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,24 +25,36 @@ public class FootballApiService {
     private final RestTemplate restTemplate = new RestTemplate();
     @Autowired
     private TelegramSenderService telegramSenderService;
-    private final List<Integer> leagueIds = List.of(235, 236, 78, 79, 140, 142, 66, 65, 61, 62, 94, 95, 135, 136, 253, 88, 307, 188, 98, 99, 100, 101, 497, 102, 242, 144, 268, 128, 265, 250, 722, 292, 293, 833, 482, 318, 293);
     private List<Match> finalResults = new ArrayList<>();
     public List<Match> tempResults = new ArrayList<>();
 
+    @Scheduled(cron = "0 0 0 * * ?")
+    public void cleanListDaily() {
+        log.info("Список будет очищен: " + finalResults);
+        finalResults.clear();
+        log.info("Список очищен в 0:00: " + finalResults);
+    }
+
     public String getMatches() {
-        List<Match> results = new ArrayList<>();
         HttpHeaders headers = new HttpHeaders();
         headers.set("apikey", "75kwgw7361l0l1ir");
         HttpEntity<String> entity = new HttpEntity<>(null, headers);
 
         log.info("Started get data from api.sstats...");
-        for (Integer leagueId : leagueIds) {
-            String apiUrl = "https://api.sstats.net/games/list?LeagueId=" + leagueId + "&Live=true";
-            ResponseEntity<String> response = restTemplate.exchange(apiUrl, HttpMethod.GET, entity, String.class);
-            Mapper mapper = new Mapper(response.getBody());
-            results.addAll(mapper.addMatch());
-        }
-        log.info("Finished get data from api.sstats...");
+        List<CompletableFuture<List<Match>>> futures = League.getIds().stream()
+                .map(leagueId -> CompletableFuture.supplyAsync(() -> {
+                    String apiUrl = "https://api.sstats.net/games/list?LeagueId=" + leagueId + "&Live=true";
+                    ResponseEntity<String> response = restTemplate.exchange(apiUrl, HttpMethod.GET, entity, String.class);
+                    Mapper mapper = new Mapper(response.getBody());
+                    return mapper.addMatch();
+                }))
+                .toList();
+
+        List<Match> results = futures.stream()
+                .map(CompletableFuture::join)
+                .flatMap(List::stream)
+                .toList();
+
         List<Match> tempResults = filterExist(filter(results));
         log.log(Level.INFO, "results: " + tempResults);
         if (!tempResults.isEmpty()) {
