@@ -1,6 +1,7 @@
 package org.example.footballevents;
 
 import jakarta.annotation.PostConstruct;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -13,9 +14,14 @@ import java.util.logging.Logger;
 @Component
 public class MyTelegramBot extends TelegramLongPollingBot {
 
+    private final FootballApiService footballApiService;
     private static final Logger log = Logger.getLogger(MyTelegramBot.class.getName());
     private final String BOT_USERNAME = "AlexOpiBot"; // без @
     private final String BOT_TOKEN = "1352098341:AAG2oUtArDIBrnp5euPhRYy0Jz8i6PmclU4";
+
+    public MyTelegramBot(@Lazy FootballApiService footballApiService) {
+        this.footballApiService = footballApiService;
+    }
 
     @Override
     public String getBotUsername() {
@@ -39,7 +45,7 @@ public class MyTelegramBot extends TelegramLongPollingBot {
             long chatId = update.getMessage().getChatId();
 
             if (messageText.equals("/res")) {
-                sendMessage(chatId, "hi");
+                sendMessage(chatId, footballApiService.getAllMatches());
             }
         }
     }

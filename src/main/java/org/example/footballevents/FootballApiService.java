@@ -13,7 +13,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,7 +31,7 @@ public class FootballApiService {
     public void cleanListDaily() {
         log.info("Список будет очищен: " + finalResults);
         finalResults.clear();
-        log.info("Список очищен в 0:00: " + finalResults);
+        log.info("Список очищен: " + finalResults);
     }
 
     public String getMatches() {
@@ -40,34 +39,29 @@ public class FootballApiService {
         headers.set("apikey", "75kwgw7361l0l1ir");
         HttpEntity<String> entity = new HttpEntity<>(null, headers);
 
-        log.info("Started get data from api.sstats...");
-        List<CompletableFuture<List<Match>>> futures = League.getIds().stream()
-                .map(leagueId -> CompletableFuture.supplyAsync(() -> {
-                    String apiUrl = "https://api.sstats.net/games/list?LeagueId=" + leagueId + "&Live=true";
-                    ResponseEntity<String> response = restTemplate.exchange(apiUrl, HttpMethod.GET, entity, String.class);
-                    Mapper mapper = new Mapper(response.getBody());
-                    return mapper.addMatch();
-                }))
-                .toList();
+        log.info("Start receiving data from api.sstats...");
+        String apiUrl = "https://api.sstats.net/games/list?Live=true";
+        ResponseEntity<String> response = restTemplate.exchange(apiUrl, HttpMethod.GET, entity, String.class);
+        Mapper mapper = new Mapper(response.getBody());
+        List<Match> liveMatch = mapper.addMatch();
+        List<Match> needsMatch = liveMatch.stream().filter(match -> League.getIds().contains(match.getLeagueId())).toList();
 
-        List<Match> results = futures.stream()
-                .map(CompletableFuture::join)
-                .flatMap(List::stream)
-                .toList();
-
-        List<Match> tempResults = filterExist(filter(results));
+        List<Match> tempResults = filterExist(filter(needsMatch));
         log.log(Level.INFO, "results: " + tempResults);
         if (!tempResults.isEmpty()) {
             telegramSenderService.sendMessage("540166889", tempResults.toString());
         }
         return tempResults.toString();
     }
+    public String getAllMatches() {
+        return finalResults.toString();
+    }
 
     public List<Match> filter(List<Match> results) {
         return results.stream()
                 .filter(m -> m.homeResult == 1)
                 .filter(m -> m.awayResult == 1)
-                .filter(m -> m.elapsed > 60)
+                .filter(m -> m.elapsed > 57 && m.elapsed < 73 )
                 .toList();
     }
 

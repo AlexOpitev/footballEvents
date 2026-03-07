@@ -12,7 +12,7 @@ public class FootballController {
         this.footballApiService = footballApiService;
     }
 
-    @Scheduled(fixedRate = 120000)
+    @Scheduled(fixedRate = 60000)
     @GetMapping("/matches")
     public String getMatches() {
         return footballApiService.getMatches();

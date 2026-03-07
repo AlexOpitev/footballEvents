@@ -1,6 +1,5 @@
 package org.example.footballevents;
 
-import lombok.AllArgsConstructor;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
@@ -31,6 +30,8 @@ public class Mapper {
             match.setStatusName(item.get("statusName").asText());
             match.setHomeTeamName(item.get("homeTeam").get("name").asText());
             match.setAwayTeamName(item.get("awayTeam").get("name").asText());
+            JsonNode league = item.at("/season/league");
+            match.setLeagueId(league.get("id").asInt());
             results.add(match);
         }
         return results;
